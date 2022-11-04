@@ -5,14 +5,16 @@ import logoNlwCopa from '../assets/logo-nlw.svg'
 import iconCheck from '../assets/icon-check.svg'
 
 import { api } from "../lib/axios"
+import { useEffect, useState } from "react"
+import {FormEvent} from 'react'
 
 
 
 
 
 interface HomeProps{
-  poolsCount:number,
-  guessesCount: number,
+  countPool:number,
+  countGuess: number,
 }
 
 
@@ -20,6 +22,31 @@ interface HomeProps{
 
 export default function Home( props: HomeProps) {
 
+
+    const [poolTitle, setPoolTitle] = useState('')
+
+
+    async function createPool(event:FormEvent) {
+      
+      event.preventDefault()
+
+      try{
+        const response = await api.post('/pools',{
+        title: poolTitle
+        })
+        const {code} = response.data
+        await navigator.clipboard.writeText(code)
+
+        alert('Bolão criado com sucesso, o codigo foi copiado para sua área de transferência!!')
+        setPoolTitle('')
+
+
+      }catch(err){
+        alert('Erro ao Criar o Bolão')
+      }
+
+      
+    }
 
   
 
@@ -49,17 +76,19 @@ export default function Home( props: HomeProps) {
           </strong>
         </div>
 
-        <form className="mt-10 flex gap-2 ">
+        <form onSubmit={createPool}  className="mt-10 flex gap-2 ">
           <input
             className="flex-1 px-6 py-4 rounded bg-gray-800 border-gray-600 text-sm"
 
             type='text' 
-            placeholder='Qual nome do seu bolão?'>
+            onChange={(e) => setPoolTitle(e.target.value)}
+            placeholder='Qual nome do seu bolão?'
+            value={poolTitle}>
 
            </input>
 
           <button 
-            className="bg-yellow-400 px-6 py-4 rounded font-bold text-sm text-gray-500" 
+            className="text-black-500 bg-yellow-500 px-6 py-4 rounded font-bold text-sm " 
             type="submit">
             CRIAR MEU BOLÃO
             </button>
@@ -75,7 +104,7 @@ export default function Home( props: HomeProps) {
 
             <div className=" flex flex-col">
 
-              <span>+{props.poolsCount}</span>
+              <span>+{props.countPool}</span>
               <span>Bolões criados</span>
             </div>
             
@@ -88,7 +117,7 @@ export default function Home( props: HomeProps) {
           <Image src={iconCheck} alt='check'/>
 
           <div className="flex flex-col">
-              <span>+{props.guessesCount}  </span>
+              <span>+{props.countGuess}  </span>
               <span>Palpites Enviados</span>
             </div>
 

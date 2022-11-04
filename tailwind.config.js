@@ -14,8 +14,8 @@ module.exports = {
           500: '#129E57'
         },
        
-        nlwBolao:{
-          300: '#F7DD43'
+        black:{
+          500: '#000'
         },
         gray:{
           100:'#E1E1E6',
